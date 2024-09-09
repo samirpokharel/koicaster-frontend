@@ -1,3 +1,4 @@
+"use client"
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
@@ -10,9 +11,13 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { FcGoogle } from 'react-icons/fc';
+import { useAuth } from "@/hooks/useAuth";
 
 
 export default function Login() {
+    const { user, login } = useAuth()
+    
+    
     return (
         <div className="flex flex-col min-h-screen justify-center items-center">
             <h1 className="my-5 text-2xl tracking-wider font-bold">KOICASTER</h1>
@@ -28,6 +33,7 @@ export default function Login() {
                     <Button
                         variant="outline"
                         size="lg"
+                        onClick={login}
                         className="flex items-center flex-grow gap-2"
                     >
                         <FcGoogle size={24} />
