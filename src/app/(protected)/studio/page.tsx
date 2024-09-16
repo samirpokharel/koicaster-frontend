@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import { Video, MessageSquare, Flag, Mail, Briefcase, MicOff, Mic, Monitor, Grid, User, Users, Layout, UserPlus } from "lucide-react";
+import { Video,  MicOff, Mic, Monitor, Grid, User, Users, Layout, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import Link from "next/link";
-import ActionButton from "./components/action-button";
-import ParticipantsRows from "./components/participants-row";
+import ActionButton from "./_components/action-button";
+import ParticipantsRows from "./_components/participants-row";
 import { Participant } from "@/interfaces/Participant";
-import StudioSideBar from "./studio-sidebar/index";
+import StudioSideBar from "./_studio-sidebar/index";
 
 type Mode = 'normal' | 'single' | 'banner' | 'presentation';
 

@@ -1,10 +1,10 @@
 "use client"
 import React from "react";
 import { Settings, Home, Library, Compass, Users } from "lucide-react";
-import { Button } from "../ui/button";
-import { DrawerContent } from "../ui/drawer";
 import { useRouter } from "next/navigation";
 import { useSidebarStore } from "@/store/useSidebarState";
+import { DrawerContent } from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 
 interface SideBarConfig {
   name: string;
@@ -47,7 +47,7 @@ export function SidebarNav() {
   return (
     <div>
       <div className="flex-1 flex fixed h-full">
-        <div className="hidden lg:flex bg-white border-r p-8 flex-col items-start space-y-8 w-64">
+        <div className="hidden lg:flex dark:bg-[#141414] dark:text-white border-r p-8 flex-col items-start space-y-8 w-64">
           {SIDEBAR_CONFIGS.map((item: SideBarConfig) => {
             return (
               <SidebarItem

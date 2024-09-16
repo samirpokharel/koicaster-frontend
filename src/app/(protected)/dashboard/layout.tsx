@@ -1,8 +1,8 @@
 "use client"
 import React from "react";
 import { Drawer } from "@/components/ui/drawer";
-import { SidebarNav } from "@/components/sidebar/index";
 import { useSidebarStore } from "@/store/useSidebarState";
+import { SidebarNav } from "./_components/side_bar";
 
 export default function DashboardLayout({
   children,
