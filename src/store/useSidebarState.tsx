@@ -1,6 +1,4 @@
-import { create, StoreApi, UseBoundStore } from 'zustand';
-import { devtools } from 'zustand/middleware'
-
+import { create } from "zustand";
 
 interface SidebarAction {
   toggleSidebar: () => void;
@@ -16,7 +14,7 @@ export const useSidebarStore = create<SidebarState & SidebarAction>((set) => ({
   toggleSidebar: () => set((state) => ({ isOpen: !state.isOpen })),
 
   setIsOpen: (open: boolean) => {
-    console.log(open)
-    set({ isOpen: open })
-  }
+    console.log(open);
+    set({ isOpen: open });
+  },
 }));
