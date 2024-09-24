@@ -9,6 +9,10 @@ import { HIDE_NAV_PATHS } from "@/lib/constant";
 import { useSidebarStore } from "@/store/useSidebarState";
 import { useAuth } from "@/hooks/useAuth";
 import { ModeToggle } from "../ui/mode-toggle";
+import Image from "next/image";
+import LogoDark from "@/public/Dark.svg";
+import LogoLight from "@/public/light.svg";
+
 
 export default function Navbar() {
   const pathName = usePathname();
@@ -25,7 +29,22 @@ export default function Navbar() {
           <Menu className="w-6 h-6" />
         </Button>
         <div className="text-sm md:text-2xl font-bold cursor-pointer">
-          <Link href={"/"}>KOICASTER</Link>
+          <Link href={"/"}>
+            <Image
+              src={LogoDark}
+              className="hidden dark:block"
+              alt="Koicaster"
+              height={50}
+              width={200}
+            />
+            <Image
+              src={LogoLight}
+              className="block dark:hidden"
+              alt="Koicaster"
+              height={50}
+              width={200}
+            />
+          </Link>
         </div>
       </div>
       <div className="flex items-center space-x-4">
