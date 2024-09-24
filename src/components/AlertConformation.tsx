@@ -17,21 +17,24 @@ export default function AlertConformation({
   isDelete = false,
   onContinue,
 }: {
-  conformationQuestion: string;
-  conformationMessage: string;
-  isDelete: boolean;
+  conformationQuestion?: string;
+  conformationMessage?: string;
+  isDelete?: boolean;
   onContinue: () => void;
 }) {
   return (
-    <AlertDialogContent>
+    <AlertDialogContent className="bg-white text-black dark:bg-black dark:text-white">
       <AlertDialogHeader>
         <AlertDialogTitle>{conformationQuestion}</AlertDialogTitle>
         <AlertDialogDescription>{conformationMessage}</AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        {/* <AlertDialogCancel>Cancel</AlertDialogCancel> */}
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+
         <AlertDialogAction onClick={onContinue}>
-          {isDelete ? "Delete" : "Continue"}
+          <Button variant={isDelete ? "destructive" : "default"}>
+            {isDelete ? "Delete" : "Continue"}
+          </Button>
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>

@@ -1,122 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { create } from "zustand";
-import {
-  MoreVertical,
-  Folder,
-  ArrowLeft,
-  Plus,
-  FolderPlus,
-  Edit2,
-  Copy,
-  Trash,
-} from "lucide-react";
+import { Folder, ArrowLeft, Plus, FolderPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-
-interface IFolder {
-  id: number;
-  name: string;
-  items: IBanner[];
-  count: number;
-}
-
-interface IBanner {
-  id: number;
-  content: string;
-  scrollAcrossBottom: boolean;
-}
-
-interface IStore {
-  folders: IFolder[];
-  currentFolder: IFolder | null;
-  banners: IBanner[];
-  setFolders: (folders: IFolder[]) => void;
-  addFolder: (folder: IFolder) => void;
-  updateFolder: (id: number, updates: Partial<IFolder>) => void;
-  deleteFolder: (id: number) => void;
-  setCurrentFolder: (folder: IFolder | null) => void;
-  setBanners: (banners: IBanner[]) => void;
-  addBanner: (banner: IBanner) => void;
-  updateBanner: (id: number, updates: Partial<IBanner>) => void;
-  deleteBanner: (id: number) => void;
-}
-
-const useStore = create<IStore>((set) => ({
-  folders: [],
-  currentFolder: null,
-  banners: [],
-  setFolders: (folders) => set({ folders }),
-  addFolder: (folder) =>
-    set((state) => ({ folders: [...state.folders, folder] })),
-  updateFolder: (id, updates) =>
-    set((state) => ({
-      folders: state.folders.map((f) =>
-        f.id === id ? { ...f, ...updates } : f
-      ),
-    })),
-  deleteFolder: (id) =>
-    set((state) => ({
-      folders: state.folders.filter((f) => f.id !== id),
-    })),
-  setCurrentFolder: (folder) => set({ currentFolder: folder }),
-  setBanners: (banners) => set({ banners }),
-  addBanner: (banner) =>
-    set((state) => ({ banners: [...state.banners, banner] })),
-  updateBanner: (id, updates) =>
-    set((state) => ({
-      banners: state.banners.map((b) =>
-        b.id === id ? { ...b, ...updates } : b
-      ),
-    })),
-  deleteBanner: (id) =>
-    set((state) => ({
-      banners: state.banners.filter((b) => b.id !== id),
-    })),
-}));
-
-const api = {
-  getFolders: (): Promise<IFolder[]> =>
-    Promise.resolve([
-      {
-        id: 1,
-        name: "Example banners",
-        count: 2,
-        items: [
-          {
-            id: 1,
-            content:
-              "This is an example of a banner. Click on a banner to show it on screen.",
-            scrollAcrossBottom: false,
-          },
-          {
-            id: 2,
-            content:
-              "Use banners to summarize your talking points and display calls to action",
-            scrollAcrossBottom: true,
-          },
-        ],
-      },
-      { id: 2, name: "banners", count: 0, items: [] },
-    ]),
-};
+import type { IBanner, IFolder } from "@/interfaces/Banner";
+import { useBannerState } from "@/store/use-banner-state";
+import { PopoverMenu } from "../../_components/power-menu";
+import { CustomDialog } from "../../_components/custom-dialog";
 
 const FolderList: React.FC = () => {
   const {
@@ -126,13 +26,9 @@ const FolderList: React.FC = () => {
     updateFolder,
     deleteFolder,
     setCurrentFolder,
-  } = useStore();
+  } = useBannerState();
   const [newFolderName, setNewFolderName] = useState("");
   const [editingFolder, setEditingFolder] = useState<IFolder | null>(null);
-
-  useEffect(() => {
-    api.getFolders().then(setFolders);
-  }, []);
 
   const handleAddFolder = () => {
     if (newFolderName) {
@@ -156,32 +52,25 @@ const FolderList: React.FC = () => {
     <div className="max-w-md mx-auto mt-10">
       <div className="flex px-3 justify-between">
         <h2 className="text-xl font-bold mb-4">Folders</h2>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
+        <CustomDialog
+          confirmText="Create"
+          title="Create new FOlder"
+          onConfirm={handleAddFolder}
+          trigger={
             <Button variant="ghost">
               <FolderPlus />
             </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="dark:bg-[#1f1f1f] dark:text-white">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Create new Folder</AlertDialogTitle>
-              <div className="my-4">
-                <Label className="mb-2">Folder Name</Label>
-                <Input
-                  value={newFolderName}
-                  onChange={(e) => setNewFolderName(e.target.value)}
-                  placeholder="Enter folder name"
-                />
-              </div>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleAddFolder}>
-                Create
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+          }
+        >
+          <div className="my-4">
+            <Label className="mb-2">Folder Name</Label>
+            <Input
+              value={newFolderName}
+              onChange={(e) => setNewFolderName(e.target.value)}
+              placeholder="Enter folder name"
+            />
+          </div>
+        </CustomDialog>
       </div>
       <div className="border">
         {folders.map((folder) => (
@@ -201,52 +90,11 @@ const FolderList: React.FC = () => {
                 </span>
               </div>
             </div>
-            <Popover>
-              <PopoverTrigger>
-                <MoreVertical size={20} />
-              </PopoverTrigger>
-              <PopoverContent>
-                <Button
-                  variant="ghost"
-                  onClick={() => setEditingFolder(folder)}
-                >
-                  <Edit2 className="mr-2" />
-                  Rename Folder
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => handleDuplicateFolder(folder)}
-                >
-                  <Copy className="mr-2" />
-                  Duplicate Folder
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost">
-                      <Trash className="mr-2" />
-                      Delete Folder
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-white text-black dark:bg-black dark:text-white">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently
-                        delete the folder and all its banners.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => deleteFolder(folder.id)}
-                      >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </PopoverContent>
-            </Popover>
+            <PopoverMenu
+              onDelete={() => deleteFolder(folder.id)}
+              onDuplicate={() => handleDuplicateFolder(folder)}
+              onEdit={() => setEditingFolder(folder)}
+            />
           </div>
         ))}
       </div>
@@ -287,7 +135,7 @@ const BannerList: React.FC = () => {
     updateBanner,
     deleteBanner,
     setCurrentFolder,
-  } = useStore();
+  } = useBannerState();
   const [newBannerContent, setNewBannerContent] = useState("");
   const [newBannerScroll, setNewBannerScroll] = useState(false);
   const [editingBanner, setEditingBanner] = useState<IBanner | null>(null);
@@ -334,41 +182,10 @@ const BannerList: React.FC = () => {
             className="p-4 bg-[#1f1f1f] rounded-md flex justify-between items-center"
           >
             <span>{banner.content}</span>
-            <Popover>
-              <PopoverTrigger>
-                <MoreVertical size={20} />
-              </PopoverTrigger>
-              <PopoverContent>
-                <Button
-                  variant="ghost"
-                  onClick={() => setEditingBanner(banner)}
-                >
-                  Edit Banner
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost">Delete Banner</Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-white text-black dark:bg-black dark:text-white">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently
-                        delete the banner.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => deleteBanner(banner.id)}
-                      >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </PopoverContent>
-            </Popover>
+            <PopoverMenu
+              onEdit={() => setEditingBanner(banner)}
+              onDelete={() => deleteBanner(banner.id)}
+            />
           </div>
         ))}
 
@@ -474,8 +291,7 @@ const BannerList: React.FC = () => {
 };
 
 const FolderAndBannerManagement: React.FC = () => {
-  const { currentFolder } = useStore();
-
+  const { currentFolder } = useBannerState();
   return (
     <div className="">{currentFolder ? <BannerList /> : <FolderList />}</div>
   );
