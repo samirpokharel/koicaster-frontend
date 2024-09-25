@@ -1,12 +1,11 @@
 "use client";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
-import { useAuth } from "../../hooks/useAuth";
-import { Spinner } from "../../components/spinner";
+import { Spinner } from "../../core/presentation/components/spinner";
+import { useAuth } from "../(auth)/application/use-auth";
 export default function MarketingPage() {
   const { loading, user } = useAuth();
   useEffect(() => {
-    console.log("User", user);
     if (user) {
       redirect("/dashboard");
     }
