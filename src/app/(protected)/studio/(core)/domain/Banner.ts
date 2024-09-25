@@ -1,12 +1,11 @@
 export interface IFolder {
-  id: number;
+  id: string;
   name: string;
-  items: IBanner[];
-  count: number;
+  items?: IBanner[];
 }
 
 export interface IBanner {
-  id: number;
+  id: string;
   content: string;
-  scrollAcrossBottom: boolean;
+  scrollAcrossBottom?: boolean;
 }

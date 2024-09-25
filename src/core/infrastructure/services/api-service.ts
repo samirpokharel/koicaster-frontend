@@ -3,13 +3,12 @@ import axios, { AxiosInstance, AxiosError } from "axios";
 export class BaseApiService {
   protected axios: AxiosInstance;
 
-  constructor(baseURL: string) {
+  constructor() {
     this.axios = axios.create({
-      baseURL,
+      baseURL: process.env.NEXT_PUBLIC_API_URL,
       withCredentials: true,
     });
 
-    // Optionally set up interceptors here if needed
     this.axios.interceptors.response.use(
       (response) => response,
       (error) => {
@@ -19,10 +18,18 @@ export class BaseApiService {
     );
   }
 
+  private extractData<T>(response: { success: boolean; data: T }): T | null {
+    if (response.success) {
+      return response.data;
+    }
+    console.error("API returned unsuccessful response.");
+    return null;
+  }
+
   protected async get<T>(url: string): Promise<T | null> {
     try {
-      const response = await this.axios.get<T>(url);
-      return response.data;
+      const response = await this.axios.get<{ success: boolean; data: T }>(url);
+      return this.extractData(response.data);
     } catch (error) {
       this.handleError(error);
       return null;
@@ -31,8 +38,11 @@ export class BaseApiService {
 
   protected async post<T>(url: string, data: unknown): Promise<T | null> {
     try {
-      const response = await this.axios.post<T>(url, data);
-      return response.data;
+      const response = await this.axios.post<{ success: boolean; data: T }>(
+        url,
+        data
+      );
+      return this.extractData(response.data);
     } catch (error) {
       this.handleError(error);
       return null;
@@ -41,8 +51,11 @@ export class BaseApiService {
 
   protected async put<T>(url: string, data: unknown): Promise<T | null> {
     try {
-      const response = await this.axios.put<T>(url, data);
-      return response.data;
+      const response = await this.axios.put<{ success: boolean; data: T }>(
+        url,
+        data
+      );
+      return this.extractData(response.data);
     } catch (error) {
       this.handleError(error);
       return null;
@@ -51,8 +64,10 @@ export class BaseApiService {
 
   protected async delete<T>(url: string): Promise<T | null> {
     try {
-      const response = await this.axios.delete<T>(url);
-      return response.data;
+      const response = await this.axios.delete<{ success: boolean; data: T }>(
+        url
+      );
+      return this.extractData(response.data);
     } catch (error) {
       this.handleError(error);
       return null;
@@ -63,9 +78,7 @@ export class BaseApiService {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
       console.error(
-        `API error occurred: ${
-          axiosError.response?.statusText || error.message
-        }`
+        `API error: ${axiosError.response?.statusText || error.message}`
       );
     } else {
       console.error("Unexpected error occurred:", error);

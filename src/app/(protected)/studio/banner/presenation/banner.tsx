@@ -30,22 +30,29 @@ const FolderList: React.FC = () => {
   const [newFolderName, setNewFolderName] = useState("");
   const [editingFolder, setEditingFolder] = useState<IFolder | null>(null);
 
+  const fetchFolders = async () => await setFolders();
+
+  useEffect(() => {
+    fetchFolders();
+  }, []);
+
   const handleAddFolder = () => {
     if (newFolderName) {
-      addFolder({ id: Date.now(), name: newFolderName, count: 0, items: [] });
+      addFolder({ name: newFolderName });
       setNewFolderName("");
     }
   };
 
   const handleUpdateFolder = () => {
     if (editingFolder) {
+      console.log(editingFolder);
       updateFolder(editingFolder.id, { name: editingFolder.name });
-      setEditingFolder(null);
+      // setEditingFolder(null);
     }
   };
 
   const handleDuplicateFolder = (folder: IFolder) => {
-    addFolder({ ...folder, id: Date.now(), name: `${folder.name} (Copy)` });
+    addFolder({ ...folder, name: `${folder.name} (Copy)` });
   };
 
   return (
@@ -86,7 +93,7 @@ const FolderList: React.FC = () => {
               <div className="flex flex-col justify-start items-start">
                 <span>{folder.name}</span>
                 <span className="text-gray-500 text-sm">
-                  {folder.count} banners
+                  {folder.items?.length} banners
                 </span>
               </div>
             </div>
@@ -143,16 +150,14 @@ const BannerList: React.FC = () => {
 
   useEffect(() => {
     if (currentFolder) {
-      setBanners(currentFolder.items);
+      setBanners(currentFolder.items ?? []);
     }
   }, [currentFolder]);
 
   const handleAddBanner = () => {
-    if (newBannerContent) {
-      addBanner({
-        id: Date.now(),
+    if (newBannerContent && currentFolder) {
+      addBanner(currentFolder?.id, {
         content: newBannerContent,
-        scrollAcrossBottom: newBannerScroll,
       });
       setNewBannerContent("");
       setNewBannerScroll(false);
@@ -161,8 +166,8 @@ const BannerList: React.FC = () => {
   };
 
   const handleUpdateBanner = () => {
-    if (editingBanner) {
-      updateBanner(editingBanner.id, editingBanner);
+    if (editingBanner && currentFolder) {
+      updateBanner(currentFolder.id, editingBanner.id, editingBanner);
       setEditingBanner(null);
     }
   };
@@ -182,10 +187,13 @@ const BannerList: React.FC = () => {
             className="p-4 bg-[#1f1f1f] rounded-md flex justify-between items-center"
           >
             <span>{banner.content}</span>
-            <PopoverMenu
-              onEdit={() => setEditingBanner(banner)}
-              onDelete={() => deleteBanner(banner.id)}
-            />
+            {currentFolder && (
+              <PopoverMenu
+                reNameTitle="Edit"
+                onEdit={() => setEditingBanner(banner)}
+                onDelete={() => deleteBanner(currentFolder.id, banner.id)}
+              />
+            )}
           </div>
         ))}
 

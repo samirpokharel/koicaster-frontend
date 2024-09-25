@@ -13,10 +13,12 @@ export const PopoverMenu = ({
   onEdit,
   onDuplicate,
   onDelete,
+  reNameTitle,
 }: {
   onEdit: () => void;
   onDuplicate?: () => void | undefined;
   onDelete: () => void;
+  reNameTitle?: string;
 }) => (
   <Popover>
     <PopoverTrigger>
@@ -25,7 +27,7 @@ export const PopoverMenu = ({
     <PopoverContent className="flex flex-col outline-none justify-start items-start w-40">
       <Button className="flex-1" variant="ghost" onClick={onEdit}>
         <Edit2 className="mr-2" />
-        Rename
+        {reNameTitle ? reNameTitle : "Rename"}
       </Button>
       {onDuplicate && (
         <Button variant="ghost" onClick={onDuplicate}>
