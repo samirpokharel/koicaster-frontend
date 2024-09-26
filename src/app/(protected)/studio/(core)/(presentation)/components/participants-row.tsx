@@ -1,4 +1,4 @@
-import type { Participant } from "@/core/domain/Participant";
+"use client"
 import {
   ScrollArea,
   ScrollBar,

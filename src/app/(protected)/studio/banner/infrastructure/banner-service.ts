@@ -11,6 +11,7 @@ class BannerService extends BaseApiService {
   }
 
   async createBanner(folderId: string, baner: Omit<IBanner, "id">) {
+    
     return await this.post<IBanner>(`/folders/${folderId}/bannerItems`, baner);
   }
 

@@ -2,16 +2,44 @@
 
 import { Button } from "@/core/presentation/components/ui/button";
 import type { Tab, Tabs } from "../../domain/StudioTab";
+import { Briefcase, Flag, Mail, MessageSquare } from "lucide-react";
 
-export default function StudioSideBar({
-  tabs,
-  activeTab,
-  setActiveTab,
-}: {
-  tabs: Tabs;
-  activeTab: string;
-  setActiveTab: (key: string) => void;
-}) {
+import CommentSection from "../../../comments/presentation/comments";
+import FolderAndBannerManagement from "../../../banner/presenation/banner";
+import PrivateChatsSection from "../../../private-chats/presentation/private-chats";
+import BrandSection from "../../../brand/presentation/brand";
+import { useState } from "react";
+
+const tabs: Tabs = {
+  comments: {
+    key: "comments",
+    label: "Comments",
+    icon: <MessageSquare className="h-full w-full" />,
+    component: <CommentSection />,
+  },
+  banner: {
+    key: "banner",
+    label: "Banner",
+    icon: <Flag className="h-full w-full" />,
+    component: <FolderAndBannerManagement />,
+  },
+  privateChats: {
+    key: "private-chats",
+    label: "Private Chats",
+    icon: <Mail className="h-full w-full" />,
+    component: <PrivateChatsSection />,
+  },
+  brand: {
+    key: "brand",
+    label: "Brand",
+    icon: <Briefcase className="h-full w-full" />,
+    component: <BrandSection />,
+  },
+};
+
+export default function StudioSideBar() {
+  const [activeTab, setActiveTab] = useState<string>("comments");
+
   return (
     <div
       className={`shadow-lg w-1/4  dark:border-l dark:border-[#1f1f1f] dark:text-white  'translate-x-0' flex`}
