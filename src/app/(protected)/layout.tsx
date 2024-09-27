@@ -1,6 +1,6 @@
 "use client";
 import { useAuth } from "@/app/(auth)/application/use-auth";
-import Navbar from "@/core/presentation/components/navbar";
+import Navbar from "@/core/presentation/components/nav-bar";
 import { Spinner } from "@/core/presentation/components/spinner";
 import { redirect } from "next/navigation";
 import { Fragment, useEffect } from "react";

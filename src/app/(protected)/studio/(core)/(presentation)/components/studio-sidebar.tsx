@@ -9,6 +9,7 @@ import FolderAndBannerManagement from "../../../banner/presenation/banner";
 import PrivateChatsSection from "../../../private-chats/presentation/private-chats";
 import BrandSection from "../../../brand/presentation/brand";
 import { useState } from "react";
+import { cn } from "@/core/infrastructure/lib/utils";
 
 const tabs: Tabs = {
   comments: {
@@ -54,11 +55,11 @@ export default function StudioSideBar() {
             <div key={key}>
               <Button
                 variant={activeTab === tab.key ? "sharp" : "ghost"}
-                className={`w-full h-20 p-4 ${
-                  activeTab === tab.key
-                    ? "dark:bg-[#1f1f1f] dark: text-gray-300 "
-                    : ""
-                }`}
+                className={cn(
+                  "w-full h-20 p-4",
+                  activeTab === tab.key &&
+                    "dark:bg-[#1f1f1f] dark: text-gray-300"
+                )}
                 onClick={() => setActiveTab(key)}
               >
                 <div className="flex flex-col rounded-none justify-center items-center">

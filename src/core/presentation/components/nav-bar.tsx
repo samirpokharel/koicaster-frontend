@@ -1,18 +1,23 @@
 "use client";
-import { LogIn, LogInIcon, LogOut, Menu } from "lucide-react";
-import { Button } from "../ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Separator } from "../ui/separator";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { redirect, usePathname } from "next/navigation";
-import { ModeToggle } from "../ui/mode-toggle";
 import Image from "next/image";
+
 import LogoDark from "@/public/Dark.svg";
 import LogoLight from "@/public/light.svg";
+
+import { LogOut, Menu } from "lucide-react";
 import { useSidebarStore } from "@/app/(protected)/dashboard/application/use-sidebar-state";
 import { useAuth } from "@/app/(auth)/application/use-auth";
 import { HIDE_NAV_PATHS } from "@/core/infrastructure/constant";
-
+import { Button } from "@/core/presentation/components/ui/button";
+import { ModeToggle } from "@/core/presentation/components/ui/mode-toggle";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/core/presentation/components/ui/popover";
+import { Separator } from "@/core/presentation/components/ui/separator";
 
 export default function Navbar() {
   const pathName = usePathname();
@@ -62,8 +67,6 @@ export default function Navbar() {
                   onClick={() => {
                     window.location.href = "/login";
                     logout();
-
-                    // redirect("/");
                   }}
                   variant="ghost"
                 >
